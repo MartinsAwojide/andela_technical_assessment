@@ -3,7 +3,7 @@ from langchain_mcp_adapters.client import MultiServerMCPClient
 
 
 def _server_config() -> dict:
-    url = os.getenv("MCP_SERVER_URL")
+    url = (os.getenv("MCP_SERVER_URL") or "").strip()
     if not url:
         raise RuntimeError("MCP_SERVER_URL is not set in environment")
     return {
