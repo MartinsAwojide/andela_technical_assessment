@@ -1,15 +1,3 @@
----
-title: meridian-support
-emoji: 💬
-colorFrom: blue
-colorTo: gray
-sdk: gradio
-sdk_version: "6.13.0"
-app_file: app.py
-pinned: false
-license: mit
----
-
 # Meridian Electronics — Customer Support Chatbot
 
 AI-powered customer support agent for Meridian Electronics. Handles product availability lookups, customer authentication, order history, and order placement via a live MCP server backend.
