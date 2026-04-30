@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Optional
+from typing import Annotated, Any
 from typing_extensions import TypedDict
 from langgraph.graph.message import add_messages
 
@@ -7,8 +7,8 @@ class AgentState(TypedDict):
     # add_messages reducer accumulates history across turns — never replaces
     messages: Annotated[list[Any], add_messages]
     authenticated: bool
-    customer_email: Optional[str]
-    session_token: Optional[str]
+    customer_email: str | None
+    session_token: str | None
     auth_attempts: int
 
 
