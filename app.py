@@ -52,11 +52,14 @@ async def reset_session() -> tuple[list, str, MeridianAgent]:
 
 
 def free_resources(agent: MeridianAgent):
-    if agent:
-        try:
-            asyncio.get_event_loop().run_until_complete(agent.close())
-        except Exception:
-            pass
+    if not agent:
+        return
+    try:
+        asyncio.run(agent.close())
+    except RuntimeError:
+        pass  # e.g. already inside a running event loop
+    except Exception:
+        pass
 
 
 with gr.Blocks(title="Meridian Support") as ui:
