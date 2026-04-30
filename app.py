@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 import sys
 import gradio as gr
 from dotenv import load_dotenv
@@ -105,4 +106,11 @@ with gr.Blocks(title="Meridian Support") as ui:
 
 
 if __name__ == "__main__":
-    ui.launch(inbrowser=True, theme=gr.themes.Default(primary_hue="blue"))
+    # Hugging Face Spaces / Docker: bind all interfaces; respect PORT when set.
+    _port = int(os.environ.get("PORT", os.environ.get("GRADIO_SERVER_PORT", "7860")))
+    ui.launch(
+        server_name="0.0.0.0",
+        server_port=_port,
+        inbrowser=os.getenv("SPACE_ID") is None and "--no-browser" not in sys.argv,
+        theme=gr.themes.Default(primary_hue="blue"),
+    )

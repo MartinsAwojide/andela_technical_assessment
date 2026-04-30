@@ -1,3 +1,15 @@
+---
+title: meridian-support
+emoji: 💬
+colorFrom: blue
+colorTo: gray
+sdk: gradio
+sdk_version: "6.13.0"
+app_file: app.py
+pinned: false
+license: mit
+---
+
 # Meridian Electronics — Customer Support Chatbot
 
 AI-powered customer support agent for Meridian Electronics. Handles product availability lookups, customer authentication, order history, and order placement via a live MCP server backend.
@@ -65,13 +77,14 @@ class AgentState(TypedDict):
 
 ```text
 andela_technical_assessment/
-├── app.py                  # Gradio UI entry point
+├── app.py                  # Gradio UI entry point (Hugging Face `app_file`)
 ├── agent/
 │   ├── graph.py            # MeridianAgent class + LLM factory
 │   ├── nodes.py            # worker node + tool_router
 │   ├── mcp_client.py       # MultiServerMCPClient wrapper
 │   ├── state.py            # AgentState TypedDict
 │   └── prompts.py          # SYSTEM_PROMPT
+├── requirements.txt       # pinned deps for pip (e.g. Hugging Face Spaces); regenerate with `uv export` (below)
 ├── test_mcp_tools.py       # MCP tool test suite (46 tests)
 ├── pyproject.toml          # uv project
 ├── .env.example            # env var template (no secrets)
@@ -132,7 +145,32 @@ To switch providers, change `LLM_PROVIDER` and `LLM_MODEL`:
 uv run python app.py
 ```
 
-Opens the Gradio chat UI at `http://localhost:7860`.
+Opens the Gradio chat UI at `http://localhost:7860`. Pass `--no-browser` to skip opening a browser tab.
+
+---
+
+## Deploy (Hugging Face Spaces)
+
+This repo follows the same pattern as the course **digital twin** Gradio apps: README **YAML front matter** (above) tells Spaces to use the **Gradio** SDK, **`app.py`**, and a pinned **`sdk_version`** that matches **`gradio`** in `requirements.txt`. Dependencies are installed with **`pip install -r requirements.txt`** (not `uv` on the builder).
+
+### Steps
+
+1. **Create a Space** at [https://huggingface.co/new-space](https://huggingface.co/new-space): SDK **Gradio**, hardware **CPU** is enough, Python **3.12** if available.
+2. **Push this repository** (or connect GitHub). Ensure these paths exist at the repo root: `app.py`, `agent/`, `requirements.txt`, `README.md` with the YAML header.
+3. **Secrets** — Space **Settings → Variables and secrets**. Add the same names as `.env.example` (minimum **`OPENROUTER_API_KEY`** if using OpenRouter). Optional: `OPENROUTER_BASE_URL`, `LLM_PROVIDER`, `LLM_MODEL`, `MCP_SERVER_URL`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`. Do not commit secrets; `app.py` uses `python-dotenv` and also reads the process environment (what HF injects).
+4. **Build logs** — Wait for `pip install` then Gradio startup. The app binds **`0.0.0.0`** and uses **`PORT`** or **`GRADIO_SERVER_PORT`** when set (Hugging Face compatibility).
+
+### Regenerate `requirements.txt` after dependency changes
+
+From the project root (with `uv.lock` present):
+
+```bash
+uv export --no-dev --format requirements-txt --no-hashes --no-editable -o requirements.txt
+```
+
+If `uv export` emits a standalone `.` line after the header comments, delete it (pip cannot install it). Commit the updated file. The `agent/` package is imported from the repo root when Spaces run `python app.py`; no editable `-e .` install is required for that layout.
+
+**Hugging Face + Pydantic:** Spaces install `gradio[mcp,oauth]`, which caps **Pydantic at ≤2.12.5**. This project pins `pydantic` in `pyproject.toml` accordingly so `pip install -r requirements.txt` succeeds next to Gradio’s extras.
 
 ### Example conversations
 

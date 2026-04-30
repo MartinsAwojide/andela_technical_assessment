@@ -161,8 +161,12 @@ andela_technical_assessment/
 | "Show me all monitors" | `list_products` (category=Monitors) when that label exists; else `search_products` | No |
 | "What are my recent orders?" | `verify_customer_pin` → `list_orders` | Yes |
 | "I want to place an order" | `verify_customer_pin` → `get_product` (per SKU for live `unit_price`) → `create_order` | Yes |
-| "Show me order details" | `verify_customer_pin` → `get_order` | Yes |
-| Anything out of scope | → escalation message | — |
+| "Show me order details" | `verify_customer_pin` → `get_order` (with `order_id` from user or from `list_orders`) | Yes |
+| "My last order" / no `order_id` | `verify_customer_pin` → `list_orders` → optionally `get_order` on chosen row | Yes |
+| Filtered orders ("pending", "shipped") | After verify: `list_orders` with `status` mapped to server enum (see `prompts.py`) | Yes |
+| User pastes only an `order_id` UUID | `get_order` first; on error, `verify_customer_pin` then retry if needed | Case-by-case |
+| SKU-only question ("price for MON-0054") | `get_product` | No |
+| Cancel / refund / change address | No tool — escalation copy | — |
 
 ---
 
@@ -196,6 +200,16 @@ The system prompt in `prompts.py` must name **only** tools exposed by the server
 | `list_orders` | — | `customer_id`, `status` (draft, submitted, approved, fulfilled, cancelled) |
 | `get_order` | `order_id` (UUID) | — |
 | `create_order` | `customer_id`, `items` | items: `{ sku, quantity>0, unit_price string, currency? }` — fetch `unit_price` via `get_product` before ordering (matches `test_mcp_tools.py`) |
+
+### Prompt behavioral guarantees (see `prompts.py`)
+
+| Topic | Behavior |
+| --- | --- |
+| Catalogue / order summaries | SKUs, prices, stock, UUIDs copied verbatim from tool text — no rounding |
+| `get_customer` | Read-only; profile/address **changes** escalate to support |
+| No MCP coverage | Cancellations, refunds, payments, repairs — escalate; do not imply completion |
+| Auth | Track failed PIN attempts in-conversation (max 3); new identity → verify again |
+| `create_order` | Clarify ambiguous quantity/SKU before calling; use live `get_product` prices |
 
 ---
 
@@ -245,4 +259,5 @@ KNOWN_SKUS=MON-0054,ACC-0131
 - [x] Bot gracefully handles out-of-scope requests
 - [x] MCP tool test suite passes (46/46)
 - [x] System prompt references only real MCP tool identifiers (e.g. `verify_customer_pin`, not invented names)
-- [ ] Live URL accessible from HuggingFace Spaces
+- [x] README Space metadata + `requirements.txt` + `app.py` bind for Hugging Face Spaces (see `README.md`)
+- [ ] Live URL accessible from HuggingFace Spaces (create Space and set secrets)
