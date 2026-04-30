@@ -260,5 +260,5 @@ KNOWN_SKUS=MON-0054,ACC-0131
 - [x] Bot gracefully handles out-of-scope requests
 - [x] MCP tool test suite passes (46/46)
 - [x] System prompt references only real MCP tool identifiers (e.g. `verify_customer_pin`, not invented names)
-- [x] README Space metadata + `requirements.txt` + `app.py` bind for Hugging Face Spaces (see `README.md`)
+- [x] `requirements.txt` + root `app.py` + `agent/` layout for Hugging Face Spaces; Gradio SDK YAML sample: `deploy/README.md` (use at Space root as needed)
 - [ ] Live URL accessible from HuggingFace Spaces (create Space and set secrets)
