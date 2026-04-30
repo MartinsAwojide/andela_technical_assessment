@@ -14,6 +14,7 @@ AI-powered customer support agent for Meridian Electronics. Handles product avai
 | **UI** | Gradio `gr.Blocks` chat interface |
 | **Auth** | Per-session email + PIN via `verify_customer_pin` MCP tool |
 | **Memory** | In-memory per session (`MemorySaver` + `thread_id`) |
+| **Design notes** | [docs/BUILD_PLAN.md](docs/BUILD_PLAN.md) |
 
 ---
 
@@ -73,10 +74,12 @@ andela_technical_assessment/
 │   ├── state.py            # AgentState TypedDict
 │   └── prompts.py          # SYSTEM_PROMPT
 ├── requirements.txt       # pinned deps for pip (e.g. Hugging Face Spaces); regenerate with `uv export` (below)
-├── test_mcp_tools.py       # MCP tool test suite (46 tests)
+├── docs/
+│   └── BUILD_PLAN.md      # original design document
+├── test/
+│   └── test_mcp_tools.py  # MCP tool test suite (46 tests)
 ├── pyproject.toml          # uv project
 ├── .env.example            # env var template (no secrets)
-└── BUILD_PLAN.md           # original design document
 ```
 
 ---
@@ -196,7 +199,7 @@ The test suite covers all 8 MCP tools across two modes.
 Uses `langchain-mcp-adapters` — the same path as the chatbot.
 
 ```bash
-uv run python test_mcp_tools.py
+uv run python test/test_mcp_tools.py
 ```
 
 Expected output: `Results: 46/46 passed`
@@ -206,7 +209,7 @@ Expected output: `Results: 46/46 passed`
 Uses `httpx` directly (no adapter) to show raw server responses at each step.
 
 ```bash
-uv run python test_mcp_tools.py --demo
+uv run python test/test_mcp_tools.py --demo
 ```
 
 Walks through the full customer journey: browse → search → product detail → authenticate → order history → place order → confirm.

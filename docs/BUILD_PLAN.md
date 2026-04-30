@@ -71,20 +71,21 @@ stateDiagram-v2
 ```text
 andela_technical_assessment/
 ├── agent/
-│   ├── __init__.py
 │   ├── state.py          # AgentState TypedDict + initial_state()
 │   ├── graph.py          # MeridianAgent class + _build_llm() factory
 │   ├── nodes.py          # build_worker_node() factory + tool_router()
 │   ├── mcp_client.py     # make_client() + load_tools() — Streamable HTTP
 │   └── prompts.py        # SYSTEM_PROMPT (Meridian-specific)
 ├── app.py                # Gradio UI entry point
-├── test_mcp_tools.py     # MCP tool test suite — 46 tests, two modes
+├── test/
+│   └── test_mcp_tools.py # MCP tool test suite — 46 tests, two modes
+├── docs/
+│   └── BUILD_PLAN.md     # this document
 ├── pyproject.toml        # uv project + dependencies
 ├── uv.lock               # pinned dependency tree
 ├── .env.example          # env var template (no secrets)
 ├── .gitignore
-├── README.md
-└── BUILD_PLAN.md
+└── README.md
 ```
 
 ---
@@ -116,7 +117,7 @@ andela_technical_assessment/
 | Build Gradio `gr.Blocks` UI | `app.py` | Chat history, session state via `gr.State` |
 | Auth flow via system prompt | `prompts.py` | LLM asks for credentials, calls `verify_customer_pin` |
 | Error handling | `nodes.py` | MCP timeout, bad tool result, LLM refusal |
-| MCP tool test suite | `test_mcp_tools.py` | 46 pass/fail tests + `--demo` narrative mode |
+| MCP tool test suite | `test/test_mcp_tools.py` | 46 pass/fail tests + `--demo` narrative mode |
 | `pyproject.toml` + `.env.example` | root | `uv` project, pin versions, no secrets in example |
 | README | `README.md` | Overview, architecture, setup, run, test |
 | Push to GitHub | — | Clean repo, no secrets |
@@ -199,7 +200,7 @@ The system prompt in `prompts.py` must name **only** tools exposed by the server
 | `get_customer` | `customer_id` (UUID) | — |
 | `list_orders` | — | `customer_id`, `status` (draft, submitted, approved, fulfilled, cancelled) |
 | `get_order` | `order_id` (UUID) | — |
-| `create_order` | `customer_id`, `items` | items: `{ sku, quantity>0, unit_price string, currency? }` — fetch `unit_price` via `get_product` before ordering (matches `test_mcp_tools.py`) |
+| `create_order` | `customer_id`, `items` | items: `{ sku, quantity>0, unit_price string, currency? }` — fetch `unit_price` via `get_product` before ordering (matches `test/test_mcp_tools.py`) |
 
 ### Prompt behavioral guarantees (see `prompts.py`)
 

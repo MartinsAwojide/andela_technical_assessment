@@ -8,8 +8,8 @@ Two modes:
               (uses httpx directly — no adapter, mirrors Gemini-style approach)
 
 Usage:
-    uv run python test_mcp_tools.py
-    uv run python test_mcp_tools.py --demo
+    uv run python test/test_mcp_tools.py
+    uv run python test/test_mcp_tools.py --demo
 """
 
 import asyncio
