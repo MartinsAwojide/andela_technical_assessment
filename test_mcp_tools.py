@@ -31,16 +31,16 @@ KNOWN_SKUS = [s.strip() for s in os.getenv("KNOWN_SKUS", "MON-0054,ACC-0131").sp
 
 # All 10 test customers from the brief
 ALL_CUSTOMERS = [
-    ("donaldgarcia@example.net",  "7912"),
-    ("michellejames@example.com",  "1520"),
+    ("donaldgarcia@example.net", "7912"),
+    ("michellejames@example.com", "1520"),
     ("laurahenderson@example.org", "1488"),
-    ("spenceamanda@example.org",   "2535"),
-    ("glee@example.net",           "4582"),
+    ("spenceamanda@example.org", "2535"),
+    ("glee@example.net", "4582"),
     ("williamsthomas@example.net", "4811"),
-    ("justin78@example.net",       "9279"),
-    ("jason31@example.com",        "1434"),
-    ("samuel81@example.com",       "4257"),
-    ("williamleon@example.net",    "9928"),
+    ("justin78@example.net", "9279"),
+    ("jason31@example.com", "1434"),
+    ("samuel81@example.com", "4257"),
+    ("williamleon@example.net", "9928"),
 ]
 
 ORDER_STATUSES = ["draft", "submitted", "approved", "fulfilled", "cancelled"]
